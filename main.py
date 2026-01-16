@@ -1,6 +1,4 @@
-def main():
-    print("Hello from discord-telegram-voice-notify!")
-
+from bot.main import main
 
 if __name__ == "__main__":
     main()
