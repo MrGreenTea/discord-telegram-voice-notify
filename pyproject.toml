@@ -1,0 +1,14 @@
+[project]
+name = "discord-telegram-voice-notify"
+version = "0.1.0"
+description = "Posts to Telegram when someone joins a Discord voice channel"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "discord.py>=2.3.0",
+    "python-telegram-bot>=21.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+package = false
