@@ -34,4 +34,7 @@ class VoiceNotifyClient(discord.Client):
             username = member.display_name
             channel = after.channel.name
             logger.info("User %s joined voice channel %s", username, channel)
-            await self.telegram_notifier.send_notification(username, channel)
+            server_name = after.channel.guild.name
+            await self.telegram_notifier.send_notification(
+                username, channel, server_name
+            )
