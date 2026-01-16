@@ -10,8 +10,10 @@ class TelegramNotifier:
         self.bot = Bot(token=token)
         self.chat_id = chat_id
 
-    async def send_notification(self, username: str, channel: str) -> None:
-        message = f"@{username} joined #{channel}"
+    async def send_notification(
+        self, username: str, channel: str, server_name: str
+    ) -> None:
+        message = f"@{username} joined #{channel} on {server_name} (Discord)"
         try:
             await self.bot.send_message(chat_id=self.chat_id, text=message)
             logger.info("Sent Telegram notification: %s", message)
