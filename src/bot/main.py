@@ -8,7 +8,7 @@ from bot.discord_client import VoiceNotifyClient
 from bot.telegram_client import TelegramNotifier
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)

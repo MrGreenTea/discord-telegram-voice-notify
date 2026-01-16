@@ -23,6 +23,12 @@ class VoiceNotifyClient(discord.Client):
         before: discord.VoiceState,
         after: discord.VoiceState,
     ) -> None:
+        logger.debug(
+            "Voice state update: %s moved from %s to %s",
+            member.display_name,
+            before.channel.name if before.channel else None,
+            after.channel.name if after.channel else None,
+        )
         # Only trigger when user joins a voice channel (wasn't in one before)
         if before.channel is None and after.channel is not None:
             username = member.display_name
