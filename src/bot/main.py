@@ -28,7 +28,11 @@ def main() -> None:
         )
         sys.exit(1)
 
-    telegram_notifier = TelegramNotifier(telegram_token, telegram_chat_id)  # type: ignore[arg-type]
+    assert discord_token is not None
+    assert telegram_token is not None
+    assert telegram_chat_id is not None
+
+    telegram_notifier = TelegramNotifier(telegram_token, telegram_chat_id)
     discord_client = VoiceNotifyClient(telegram_notifier)
 
     logger.info("Starting Discord bot...")
