@@ -1,0 +1,9 @@
+{
+  "default_telegram_chat_id": "-4600274895",
+  "mappings": [
+    {
+      "discord_channel": "Working",
+      "telegram_chat_id": "-4935171520"
+    }
+  ]
+}
