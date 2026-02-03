@@ -1,10 +1,10 @@
 import logging
 import time
-from typing import Any
 
 import discord
 
 from bot.telegram_client import TelegramNotifier
+from bot.config_models import Config
 
 logger = logging.getLogger(__name__)
 
@@ -13,20 +13,20 @@ class VoiceNotifyClient(discord.Client):
     def __init__(
         self,
         telegram_notifier: TelegramNotifier,
-        config: dict[str, Any],
+        config: Config,
     ) -> None:
         intents = discord.Intents.default()
         intents.voice_states = True
         super().__init__(intents=intents)
         self.telegram_notifier = telegram_notifier
-        self.default_chat_id = config["default_telegram_chat_id"]
+        self.default_chat_id = config.default_telegram_chat_id
         self.channel_mappings = {
-            m["discord_channel"]: m["telegram_chat_id"] for m in config["mappings"]
+            m.discord_channel: m.telegram_chat_id for m in config.mappings
         }
         # Track last notification time per user to prevent spam
         # Key: user_id, Value: timestamp
         self._last_notification_times: dict[int, float] = {}
-        self.debounce_seconds = config.get("debounce_seconds", 60)
+        self.debounce_seconds = config.debounce_seconds
 
     async def on_ready(self) -> None:
         logger.info("Discord bot logged in as %s", self.user)

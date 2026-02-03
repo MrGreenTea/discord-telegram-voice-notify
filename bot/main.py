@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sys
@@ -8,6 +7,7 @@ from dotenv import load_dotenv
 
 from bot.discord_client import VoiceNotifyClient
 from bot.telegram_client import TelegramNotifier
+from bot.config_models import Config
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -35,8 +35,12 @@ def main() -> None:
         logger.error("Config file not found: %s", CONFIG_PATH)
         sys.exit(1)
 
-    with open(CONFIG_PATH) as f:
-        config = json.load(f)
+    try:
+        with open(CONFIG_PATH) as f:
+            config = Config.model_validate_json(f.read())
+    except Exception as e:
+        logger.error("Failed to parse config: %s", e)
+        sys.exit(1)
 
     assert discord_token is not None
     assert telegram_token is not None
