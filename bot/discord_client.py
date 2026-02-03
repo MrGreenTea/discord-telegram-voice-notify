@@ -46,5 +46,10 @@ class VoiceNotifyClient(discord.Client):
             server_name = after.channel.guild.name
             chat_id = self.channel_mappings.get(channel, self.default_chat_id)
             await self.telegram_notifier.send_notification(
-                username, channel, server_name, chat_id
+                username,
+                channel,
+                server_name,
+                chat_id,
+                guild_id=after.channel.guild.id,
+                channel_id=after.channel.id,
             )

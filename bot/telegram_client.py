@@ -10,11 +10,20 @@ class TelegramNotifier:
         self.bot = Bot(token=token)
 
     async def send_notification(
-        self, username: str, channel: str, server_name: str, chat_id: str
+        self,
+        username: str,
+        channel: str,
+        server_name: str,
+        chat_id: str,
+        guild_id: int,
+        channel_id: int,
     ) -> None:
-        message = f"@{username} joined #{channel} on {server_name} (Discord)"
+        channel_url = f"https://discord.com/channels/{guild_id}/{channel_id}"
+        message = f'@{username} joined <a href="{channel_url}">#{channel}</a> on {server_name} (Discord)'
         try:
-            await self.bot.send_message(chat_id=chat_id, text=message)
+            await self.bot.send_message(
+                chat_id=chat_id, text=message, parse_mode="HTML"
+            )
             logger.info("Sent Telegram notification to %s: %s", chat_id, message)
         except Exception as e:
             logger.error("Failed to send Telegram notification: %s", e)
