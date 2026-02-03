@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Any
 
 import discord
@@ -22,6 +23,10 @@ class VoiceNotifyClient(discord.Client):
         self.channel_mappings = {
             m["discord_channel"]: m["telegram_chat_id"] for m in config["mappings"]
         }
+        # Track last notification time per user to prevent spam
+        # Key: user_id, Value: timestamp
+        self._last_notification_times: dict[int, float] = {}
+        self.debounce_seconds = config.get("debounce_seconds", 60)
 
     async def on_ready(self) -> None:
         logger.info("Discord bot logged in as %s", self.user)
@@ -40,11 +45,23 @@ class VoiceNotifyClient(discord.Client):
         )
         # Only trigger when user joins a voice channel (wasn't in one before)
         if before.channel is None and after.channel is not None:
+            current_time = time.time()
+            last_time = self._last_notification_times.get(member.id, 0)
+
+            if current_time - last_time < self.debounce_seconds:
+                logger.info(
+                    "Debouncing notification for %s (last sent %.1fs ago)",
+                    member.display_name,
+                    current_time - last_time,
+                )
+                return
+
             username = member.display_name
             channel = after.channel.name
             logger.info("User %s joined voice channel %s", username, channel)
             server_name = after.channel.guild.name
             chat_id = self.channel_mappings.get(channel, self.default_chat_id)
+
             await self.telegram_notifier.send_notification(
                 username,
                 channel,
@@ -53,3 +70,4 @@ class VoiceNotifyClient(discord.Client):
                 guild_id=after.channel.guild.id,
                 channel_id=after.channel.id,
             )
+            self._last_notification_times[member.id] = current_time

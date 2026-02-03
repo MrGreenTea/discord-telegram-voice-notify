@@ -1,5 +1,6 @@
 {
   "default_telegram_chat_id": "-4600274895",
+  "debounce_seconds": 60,
   "mappings": [
     {
       "discord_channel": "Working",
