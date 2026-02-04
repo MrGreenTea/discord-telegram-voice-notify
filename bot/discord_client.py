@@ -38,10 +38,12 @@ class VoiceNotifyClient(discord.Client):
         after: discord.VoiceState,
     ) -> None:
         logger.debug(
-            "Voice state update: %s moved from %s to %s",
+            "Voice state update: %s moved from %s (%s) to %s (%s)",
             member.display_name,
             before.channel.name if before.channel else None,
+            before.channel.id if before.channel else None,
             after.channel.name if after.channel else None,
+            after.channel.id if after.channel else None,
         )
         # Only trigger when user joins a voice channel (wasn't in one before)
         if before.channel is None and after.channel is not None:
@@ -57,14 +59,20 @@ class VoiceNotifyClient(discord.Client):
                 return
 
             username = member.display_name
-            channel = after.channel.name
-            logger.info("User %s joined voice channel %s", username, channel)
+            channel_name = after.channel.name
+            channel_id = after.channel.id
+            logger.info(
+                "User %s joined voice channel %s (ID: %s)",
+                username,
+                channel_name,
+                channel_id,
+            )
             server_name = after.channel.guild.name
-            chat_id = self.channel_mappings.get(channel, self.default_chat_id)
+            chat_id = self.channel_mappings.get(channel_name, self.default_chat_id)
 
             await self.telegram_notifier.send_notification(
                 username,
-                channel,
+                channel_name,
                 server_name,
                 chat_id,
                 guild_id=after.channel.guild.id,
