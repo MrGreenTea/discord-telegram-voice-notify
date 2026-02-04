@@ -21,7 +21,7 @@ class VoiceNotifyClient(discord.Client):
         self.telegram_notifier = telegram_notifier
         self.default_chat_id = config.default_telegram_chat_id
         self.channel_mappings = {
-            m.discord_channel: m.telegram_chat_id for m in config.mappings
+            m.discord_channel_id: m.telegram_chat_id for m in config.mappings
         }
         self.user_mappings = {
             m.discord_user_id: m.telegram_username for m in config.user_mappings
@@ -64,15 +64,17 @@ class VoiceNotifyClient(discord.Client):
             username = member.display_name
             telegram_username = self.user_mappings.get(member.id)
             channel_name = after.channel.name
-            channel_id = after.channel.id
+            channel_id = str(after.channel.id)
+
             logger.info(
                 "User %s joined voice channel %s (ID: %s)",
                 username,
                 channel_name,
                 channel_id,
             )
+
             server_name = after.channel.guild.name
-            chat_id = self.channel_mappings.get(channel_name, self.default_chat_id)
+            chat_id = self.channel_mappings.get(channel_id, self.default_chat_id)
 
             await self.telegram_notifier.send_notification(
                 username,

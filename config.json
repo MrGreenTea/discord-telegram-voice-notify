@@ -3,7 +3,8 @@
   "debounce_seconds": 1200,
   "mappings": [
     {
-      "discord_channel": "Working",
+      "comment": "Working",
+      "discord_channel_id": "1328733880794218547",
       "telegram_chat_id": "-4935171520"
     }
   ]

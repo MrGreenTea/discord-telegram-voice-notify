@@ -2,8 +2,9 @@ from pydantic import BaseModel, Field
 
 
 class ChannelMapping(BaseModel):
-    discord_channel: str
+    discord_channel_id: str
     telegram_chat_id: str
+    comment: str | None = None
 
 
 class UserMapping(BaseModel):
