@@ -1,6 +1,7 @@
 import logging
 
 from telegram import Bot
+from telegram import LinkPreviewOptions
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,10 @@ class TelegramNotifier:
         message = f'{display_name} joined <a href="{channel_url}">#{channel}</a>'
         try:
             await self.bot.send_message(
-                chat_id=chat_id, text=message, parse_mode="HTML"
+                chat_id=chat_id,
+                text=message,
+                parse_mode="HTML",
+                link_preview_options=LinkPreviewOptions(is_disabled=True),
             )
             logger.info("Sent Telegram notification to %s: %s", chat_id, message)
         except Exception as e:
