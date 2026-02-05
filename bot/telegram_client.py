@@ -17,9 +17,11 @@ class TelegramNotifier:
         chat_id: str,
         guild_id: int,
         channel_id: int,
+        telegram_username: str | None = None,
     ) -> None:
         channel_url = f"https://discord.com/channels/{guild_id}/{channel_id}"
-        message = f'@{username} joined <a href="{channel_url}">#{channel}</a>'
+        display_name = f"@{telegram_username}" if telegram_username else username
+        message = f'{display_name} joined <a href="{channel_url}">#{channel}</a>'
         try:
             await self.bot.send_message(
                 chat_id=chat_id, text=message, parse_mode="HTML"

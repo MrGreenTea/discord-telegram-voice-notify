@@ -23,6 +23,9 @@ class VoiceNotifyClient(discord.Client):
         self.channel_mappings = {
             m.discord_channel: m.telegram_chat_id for m in config.mappings
         }
+        self.user_mappings = {
+            m.discord_user_id: m.telegram_username for m in config.user_mappings
+        }
         # Track last notification time per user to prevent spam
         # Key: user_id, Value: timestamp
         self._last_notification_times: dict[int, float] = {}
@@ -59,6 +62,7 @@ class VoiceNotifyClient(discord.Client):
                 return
 
             username = member.display_name
+            telegram_username = self.user_mappings.get(member.id)
             channel_name = after.channel.name
             channel_id = after.channel.id
             logger.info(
@@ -77,5 +81,6 @@ class VoiceNotifyClient(discord.Client):
                 chat_id,
                 guild_id=after.channel.guild.id,
                 channel_id=after.channel.id,
+                telegram_username=telegram_username,
             )
             self._last_notification_times[member.id] = current_time
